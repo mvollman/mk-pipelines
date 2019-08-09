@@ -84,6 +84,7 @@ timeout(time: 12, unit: 'HOURS') {
         salt.runSaltProcessStep(pepperEnv, 'I@salt:master', 'saltutil.sync_grains', [], null, true, 5)
         def _pillar = salt.getGrain(pepperEnv, 'I@salt:master', 'domain')
         domain = _pillar['return'][0].values()[0].values()[0]
+        common.infoMsg("Look mom I made it 1")
 
         if (HOST_TYPE.toLowerCase() == 'rgw') {
             // Remove Ceph rgw
@@ -102,9 +103,11 @@ timeout(time: 12, unit: 'HOURS') {
             stage('Destroy/Undefine VM') {
                 _pillar = salt.getGrain(pepperEnv, 'I@salt:control', 'id')
                 def kvm01 = _pillar['return'][0].values()[0].values()[0]
+                common.infoMsg("Look mom I made it 2")
 
                 _pillar = salt.getPillar(pepperEnv, "${kvm01}", "salt:control:cluster:internal:node:${target}:provider")
                 def targetProvider = _pillar['return'][0].values()[0]
+                common.infoMsg("Look mom I made it 3")
 
                 salt.cmdRun(pepperEnv, "${targetProvider}", "virsh destroy ${target}.${domain}")
                 salt.cmdRun(pepperEnv, "${targetProvider}", "virsh undefine ${target}.${domain}")
